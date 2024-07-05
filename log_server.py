@@ -81,8 +81,8 @@ def check_legal_data(data):
     
     # 驗證 LEVEL
     level = data.get('LEVEL', '').upper()
-    if level not in ['INFO', 'WARN', 'ERROR']:
-        errors.append('LEVEL 必須是 INFO、WARN 或 ERROR')
+    if level not in ['INFO', 'WARN', 'ERRO']:
+        errors.append('LEVEL 必須是 INFO、WARN 或 ERRO')
     
     # 驗證 PROCESS_NAME
     if len(data.get('PROCESS_NAME', '')) > 64:
@@ -179,7 +179,7 @@ def log():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-    ##data格式缺失 400
+    ##data格式缺失 400 402
     ##成功201
     ##連接失敗500
     ##非連接問題失敗501
