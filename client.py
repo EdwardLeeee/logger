@@ -4,10 +4,10 @@ from datetime import datetime
 
 # 日誌數據格式
 log_entry = {
-    "HOST_NAME": "test2",
+    "HOST_NAME": "Test1 Python",
     "HOST_IP": "172.17.34.31",
     "SYSTEM_TYPE": "EBTS",
-    "LEVEL": "INFO0000000000000000",
+    "LEVEL": "INFO",
     "PROCESS_NAME": "Example",
     "CONTENT": "This is a log entry content.",
     "LOG_TIME": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
