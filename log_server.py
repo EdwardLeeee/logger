@@ -5,10 +5,14 @@ from mysql.connector import Error
 app = Flask(__name__)
 
 db_config = {
-    'user': '',
-    'password': '0000',
-    'host': '',
-    'database': ''
+    'user': config.get('DEFAULT', 'user'),
+    'password': config.get('DEFAULT', 'password'),
+    'host': config.get('DEFAULT', 'host'),
+    'database': config.get('DEFAULT', 'database')
+    #'user': 'intern2',
+    #'password': '0000',
+    #'host': '127.0.0.1',
+    #'database': 'logger'
 }
 
 @app.route('/', methods=['GET'])
