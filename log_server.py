@@ -3,7 +3,6 @@ import mysql.connector
 import configparser
 from mysql.connector import Error
 from flask_cors import CORS
-#app = Flask(__name__)
 app = Flask(__name__, static_folder='public')
 CORS(app)
 
@@ -16,15 +15,15 @@ db_config = {
     'password': config.get('DEFAULT', 'password'),
     'host': config.get('DEFAULT', 'host'),
     'database': config.get('DEFAULT', 'database')
-    #'user': 'intern2',
-    #'password': '0000',
-    #'host': '127.0.0.1',
-    #'database': 'logger'
 }
 
 @app.route('/', methods=['GET'])
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static_file(path):
+    return send_from_directory(app.static_folder, path)
 
 @app.route('/search', methods=['GET'])
 def search_logs():
@@ -73,20 +72,20 @@ def check_legal_data(data):
     # 驗證 HOST_NAME
     if len(data.get('HOST_NAME', '')) > 16:
         errors.append('HOST_NAME 超過 16 個字符')
-    
+
     # 驗證 HOST_IP
     if len(data.get('HOST_IP', '')) > 15:
         errors.append('HOST_IP 超過 15 個字符')
-    
+
     # 驗證 SYSTEM_TYPE
     if len(data.get('SYSTEM_TYPE', '')) > 20:
         errors.append('SYSTEM_TYPE 超過 20 個字符')
-    
+
     # 驗證 LEVEL
     level = data.get('LEVEL', '').upper()
-    if level not in ['INFO', 'WARN', 'ERROR']:
-        errors.append('LEVEL 必須是 INFO、WARN 或 ERROR')
-    
+    if level not in ['INFO', 'WARN', 'ERRO']:
+        errors.append('LEVEL 必須是 INFO、WARN 或 ERRO')
+
     # 驗證 PROCESS_NAME
     if len(data.get('PROCESS_NAME', '')) > 64:
         errors.append('PROCESS_NAME 超過 64 個字符')
@@ -98,10 +97,10 @@ def check_legal_data(data):
     if len(data.get('LOG_TIME', '')) > 19:
         errors.append('LOG_TIME 超過 19 個字符')
     if errors:
-        print('Wrong data format') 
+        print('Wrong data format')
 
     return errors
-    
+
 
 #創立會回傳連接而且會在server打印訊息
 def create_connection():
@@ -125,10 +124,10 @@ def check_miss(data):
             miss_field.append(field)
     if miss_field :
         print(f'Missing field: {miss_field}')
-    
+
     return miss_field
-    
-    
+
+
 #routing路徑為/log 用HTTP的post
 @app.route('/log', methods=['POST'])
 def log():
@@ -144,14 +143,14 @@ def log():
     data_unlegal = check_legal_data(data)
     if data_unlegal:
         return jsonify({'status': 'error', 'message': f'{data_unlegal}'}), 402
-     
+
     #無資料殘缺
     try:
         connection = create_connection()
         if connection:
             #創一個游標，用來輸入sql指令
             cursor = connection.cursor()
-           
+
             #%s是實際要插入的值,參數化input
             input_order = """
             INSERT INTO log_data (HOST_NAME, HOST_IP, SYSTEM_TYPE, LEVEL, PROCESS_NAME, CONTENT, LOG_TIME)
@@ -176,7 +175,7 @@ def log():
         #連接失敗，告訴client
         else:
             return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-   #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤 
+   #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤
     except Error as e:
         return jsonify({'status': 'error', 'message': str(e)}), 501
 

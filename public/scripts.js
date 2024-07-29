@@ -13,20 +13,28 @@ document.getElementById('searchForm').addEventListener('submit', function(event)
         .then(response => response.json())
         .then(data => {
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<ul>' + data.map(log => `
-                <li>
-                    <strong>ID:</strong> ${log.ID}<br>
-                    <strong>Host Name:</strong> ${log.HOST_NAME}<br>
-                    <strong>Host IP:</strong> ${log.HOST_IP}<br>
-                    <strong>System Type:</strong> ${log.SYSTEM_TYPE}<br>
-                    <strong>Level:</strong> ${log.LEVEL}<br>
-                    <strong>Process Name:</strong> ${log.PROCESS_NAME}<br>
-                    <strong>Content:</strong> ${log.CONTENT}<br>
-                    <strong>Log Time:</strong> ${log.LOG_TIME}<br>
-                    <strong>Timestamp:</strong> ${log.TIMESTAMP}
-                </li>
-            `).join('') + '</ul>';
+            if (Array.isArray(data) && data.length > 0) {
+                resultsDiv.innerHTML = '<ul>' + data.map(log => `
+                    <li>
+                        <strong>ID:</strong> ${log.ID}<br>
+                        <strong>Host Name:</strong> ${log.HOST_NAME}<br>
+                        <strong>Host IP:</strong> ${log.HOST_IP}<br>
+                        <strong>System Type:</strong> ${log.SYSTEM_TYPE}<br>
+                        <strong>Level:</strong> ${log.LEVEL}<br>
+                        <strong>Process Name:</strong> ${log.PROCESS_NAME}<br>
+                        <strong>Content:</strong> ${log.CONTENT}<br>
+                        <strong>Log Time:</strong> ${log.LOG_TIME}<br>
+                        <strong>Timestamp:</strong> ${log.TIMESTAMP}
+                    </li>
+                `).join('') + '</ul>';
+            } else {
+                resultsDiv.innerHTML = '<p>No results found.</p>';
+            }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>An error occurred. Please try again later.</p>';
+        });
 });
 
