@@ -81,7 +81,7 @@ def log():
     #檢查是否資料缺失
     missing_field = check_miss(data)
     if missing_field:
-        return jsonify({'status': 'error', 'message': f'Missing field: {missing_field}'}), 400
+        return jsonify({'status': 'error', 'message': f'Missing field {missing_field}'}), 400
 
     #檢查數據是否合法
     data_unlegal = check_legal_data(data)
@@ -124,8 +124,12 @@ def log():
         return jsonify({'status': 'error', 'message': str(e)}), 501
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    #生產環境要把debug拿掉，host 0000表示接受所有的ip
+    #thread表示多線程
+    app.run(debug=True ,host='0.0.0.0', port=5000,threaded=True)
+
     ##data格式缺失 400
+    ##data格式錯誤 402
     ##成功201
     ##連接失敗500
     ##非連接問題失敗501
