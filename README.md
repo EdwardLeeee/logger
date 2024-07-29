@@ -6,13 +6,15 @@ Python
 ``python client1.py``  
 
 C 
-``` 
+``sudo dnf install libcurl-devel #安裝所需函式庫``
+```
 gcc -o client2 client2.c -lcurl  
 ./client2
 ```
 
 Java  
+``dnf install java-1.8.0-openjdk-devel``
 ```
-javac client3.py  
+javac client3.java  
 java client3  
 ```
