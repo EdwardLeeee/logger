@@ -12,7 +12,7 @@ public class client3 {
             // 構建JSON數據
             String logTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             String logEntry = String.format(
-                    "{\"HOST_NAME\": \"Test1\", " +
+                    "{\"HOST_NAME\": \"Test3 Java\", " +
                     "\"HOST_IP\": \"172.17.34.31\", " +
                     "\"SYSTEM_TYPE\": \"EBTS.P\", " +
                     "\"LEVEL\": \"INFO\", " +
