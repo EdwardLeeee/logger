@@ -1,7 +1,8 @@
+'''
 from flask import Flask, request, jsonify
 import mysql.connector
 from mysql.connector import Error
-
+'''
 app = Flask(__name__)
 
 # MySQL database configuration
