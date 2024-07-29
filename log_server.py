@@ -2,7 +2,14 @@ from flask import Flask, request, jsonify, send_from_directory
 import mysql.connector
 import configparser
 from mysql.connector import Error
-app = Flask(__name__)
+from flask_cors import CORS
+#app = Flask(__name__)
+app = Flask(__name__, static_folder='public')
+CORS(app)
+
+# 讀取配置文件
+config = configparser.ConfigParser()
+config.read('db_config.txt')
 
 db_config = {
     'user': config.get('DEFAULT', 'user'),
