@@ -8,8 +8,9 @@ CORS(app)  # 啟用 CORS
 def receive_log():
     log_entry = request.json
     print("Received log entry:", log_entry)
-    return jsonify({"message": "Log entry received successfully"}), 200
+   # return jsonify({"message": "Log entry received successfully",}), 201
+    return jsonify({"message": f"{log_entry}",}), 201
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3000)
+    app.run(debug=True, host='0.0.0.0', port=5000)
 

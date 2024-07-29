@@ -7,7 +7,7 @@ log_entry = {
     "HOST_NAME": "test2",
     "HOST_IP": "172.17.34.31",
     "SYSTEM_TYPE": "EBTS",
-    "LEVEL": "INFO0000000000000000",
+    "LEVEL": "INFO",
     "PROCESS_NAME": "Example",
     "CONTENT": "This is a log entry content.",
     "LOG_TIME": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -17,13 +17,13 @@ log_entry = {
 url = "http://localhost:5000/log"
 
 # 發送 POST 請求
-#while (1):
-#    response = requests.post(url, json=log_entry)
-response = requests.post(url, json=log_entry)
+while (1):
+    response = requests.post(url, json=log_entry)
+#response = requests.post(url, json=log_entry)
 
 #print(f"message: {response.json().get('message'),'NULL'}")
 if response.status_code == 201:
     print("Log entry sent successfully.")
 else:
     print(f"Failed to send log entry. Status code: {response.status_code}")
-    print(f"Message : {response.json().get('message')}")
+    print(f"Error : {response.json().get('message')}")
