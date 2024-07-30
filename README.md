@@ -50,6 +50,8 @@ java client3
 打開瀏覽器輸入`localhost:5000`可看到查詢log的輸入欄位。
 透過輸入關鍵字進行搜尋，如下圖。若未輸入任何欄位就按下Search，則會返回所有logs.
 
-![image](https://github.com/user-attachments/assets/1a55824f-2d6c-487f-87d7-d6cfd83d3202)
-![image](https://github.com/user-attachments/assets/4be9ded6-5756-44ed-b85b-b5571a5b5886)
+![image](https://github.com/user-attachments/assets/9ad03580-7d90-483c-bd34-ddded169aec4)
+
+![image](https://github.com/user-attachments/assets/fcc4a9e8-eabc-48d0-bbf4-5c387773d7d3)
+
 
