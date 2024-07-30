@@ -2,7 +2,8 @@
 這是一套可模擬client發送請求到server，並可以在資料庫新增data的一套log程式。
 還有附上Web UI，提供使用者查詢特定條件的log
 
-### client 運行指引
+### client運行指引
+
 #### Database
 需額外創建db_config.txt，在裡面輸入資訊後才能連接至自己的資料庫(預設是MySQL)。
 以下是db_config.txt的範例檔：
@@ -21,7 +22,9 @@ database=yourdb
 python client.py
 ```
 
+
 #### C
+>>>>>>> origin/Lee
 安裝環境
 ```
 sudo dnf install libcurl-devel #安裝所需函式庫
