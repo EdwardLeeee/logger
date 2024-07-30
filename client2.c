@@ -23,7 +23,7 @@ int main(void) {
 
         char json_data[512];
         snprintf(json_data, sizeof(json_data),
-                 "{\"HOST_NAME\": \"example_host\", \"HOST_IP\": \"192.168.1.1\", \"SYSTEM_TYPE\": \"example_system\", \"LEVEL\": \"INFO\", \"PROCESS_NAME\": \"example_process\", \"CONTENT\": \"This is a log entry sent by C client.\", \"LOG_TIME\": \"%s\"}",
+                 "{\"HOST_NAME\": \"Test2 C\", \"HOST_IP\": \"192.168.1.1\", \"SYSTEM_TYPE\": \"example_system\", \"LEVEL\": \"INFO\", \"PROCESS_NAME\": \"example_process\", \"CONTENT\": \"This is a log entry sent by C client.\", \"LOG_TIME\": \"%s\"}",
                  datetime);
 
         curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:5000/log");

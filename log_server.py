@@ -1,35 +1,91 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import mysql.connector
+import configparser
 from mysql.connector import Error
+from flask_cors import CORS
+app = Flask(__name__, static_folder='public')
+CORS(app)
 
-app = Flask(__name__)
+# 讀取配置文件
+config = configparser.ConfigParser()
+config.read('db_config.txt')
 
-# MySQL database configuration
 db_config = {
-    'user': 'intern2',#mysql user
-    'password': '0000',#mysql password
-    'host': '127.0.0.1', # localhost
-    'database': 'logger', # logdb
+    'user': config.get('DEFAULT', 'user'),
+    'password': config.get('DEFAULT', 'password'),
+    'host': config.get('DEFAULT', 'host'),
+    'database': config.get('DEFAULT', 'database')
 }
+
+@app.route('/', methods=['GET'])
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static_file(path):
+    return send_from_directory(app.static_folder, path)
+
+@app.route('/search', methods=['GET'])
+def search_logs():
+    host_name = request.args.get('host_name')
+    host_ip = request.args.get('host_ip')
+    system_type = request.args.get('system_type')
+    level = request.args.get('level')
+    log_time = request.args.get('log_time')
+
+    query = 'SELECT * FROM log_data WHERE 1=1'
+    query_params = []
+
+    if host_name:
+        query += ' AND HOST_NAME = %s'
+        query_params.append(host_name)
+    if host_ip:
+        query += ' AND HOST_IP = %s'
+        query_params.append(host_ip)
+    if system_type:
+        query += ' AND SYSTEM_TYPE = %s'
+        query_params.append(system_type)
+    if level:
+        query += ' AND LEVEL = %s'
+        query_params.append(level)
+    if log_time:
+        query += ' AND LOG_TIME = %s'
+        query_params.append(log_time)
+
+    try:
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute(query, query_params)
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return jsonify(results), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
+    except Error as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 def check_legal_data(data):
     errors = []
     # 驗證 HOST_NAME
     if len(data.get('HOST_NAME', '')) > 16:
         errors.append('HOST_NAME 超過 16 個字符')
-    
+
     # 驗證 HOST_IP
     if len(data.get('HOST_IP', '')) > 15:
         errors.append('HOST_IP 超過 15 個字符')
-    
+
     # 驗證 SYSTEM_TYPE
     if len(data.get('SYSTEM_TYPE', '')) > 20:
         errors.append('SYSTEM_TYPE 超過 20 個字符')
-    
+
     # 驗證 LEVEL
     level = data.get('LEVEL', '').upper()
-    if level not in ['INFO', 'WARN', 'ERROR']:
-        errors.append('LEVEL 必須是 INFO、WARN 或 ERROR')
-    
+    if level not in ['INFO', 'WARN', 'ERRO']:
+        errors.append('LEVEL 必須是 INFO、WARN 或 ERRO')
+
     # 驗證 PROCESS_NAME
     if len(data.get('PROCESS_NAME', '')) > 64:
         errors.append('PROCESS_NAME 超過 64 個字符')
@@ -41,10 +97,10 @@ def check_legal_data(data):
     if len(data.get('LOG_TIME', '')) > 19:
         errors.append('LOG_TIME 超過 19 個字符')
     if errors:
-        print('Wrong data format') 
+        print('Wrong data format')
 
     return errors
-    
+
 
 #創立會回傳連接而且會在server打印訊息
 def create_connection():
@@ -68,10 +124,10 @@ def check_miss(data):
             miss_field.append(field)
     if miss_field :
         print(f'Missing field: {miss_field}')
-    
+
     return miss_field
-    
-    
+
+
 #routing路徑為/log 用HTTP的post
 @app.route('/log', methods=['POST'])
 def log():
@@ -87,14 +143,14 @@ def log():
     data_unlegal = check_legal_data(data)
     if data_unlegal:
         return jsonify({'status': 'error', 'message': f'{data_unlegal}'}), 402
-     
+
     #無資料殘缺
     try:
         connection = create_connection()
         if connection:
             #創一個游標，用來輸入sql指令
             cursor = connection.cursor()
-           
+
             #%s是實際要插入的值,參數化input
             input_order = """
             INSERT INTO log_data (HOST_NAME, HOST_IP, SYSTEM_TYPE, LEVEL, PROCESS_NAME, CONTENT, LOG_TIME)
@@ -119,7 +175,7 @@ def log():
         #連接失敗，告訴client
         else:
             return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-   #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤 
+   #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤
     except Error as e:
         return jsonify({'status': 'error', 'message': str(e)}), 501
 
