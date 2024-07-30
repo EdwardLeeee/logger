@@ -17,9 +17,13 @@
 
         <label for="system_type">System Type:</label>
         <input type="text" id="system_type" name="system_type">
-
-        <label for="level">Log Level:</label>
-        <input type="text" id="level" name="level">
+		<label for="level">Log Level:</label>
+        <select id="level" name="level">
+            <option value="">--All--</option>
+            <option value="INFO">INFO</option>
+            <option value="WARN">WARN</option>
+            <option value="ERRO">ERRO</option>
+        </select>
 
         <label for="log_time">Log Time:</label>
         <input type="date" id="log_time" name="log_time">

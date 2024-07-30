@@ -1,23 +1,25 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: black;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
+    justify-content: center;
+    minheight: 100vh;
+    overflow-y: auto; /* 允許滾動條出現以顯示超出內容 */
 }
+
 h1 {
-    color: #333;
+    color: #fff;
     margin-top: 20px;
 }
 form {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
     margin-top: 20px;
@@ -27,6 +29,14 @@ label {
     margin-bottom: 5px;
     font-weight: bold;
 }
+select {
+    width: calc(100% + 5px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
 input[type="text"],
 input[type="date"] {
     width: calc(100% - 20px);
@@ -55,6 +65,7 @@ button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     width: 100%;
+    /*overflow: auto; /* 允許在結果區域內部出現滾動條 */
 }
 ul {
     list-style-type: none;
@@ -73,3 +84,7 @@ strong {
     color: #333;
 }
 
+h2 {
+    color: #fff;
+    margin-top: 20px;
+}
