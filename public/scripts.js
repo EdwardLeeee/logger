@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const host_ip = document.getElementById('host_ip').value;
         const system_type = document.getElementById('system_type').value;
         const level = document.getElementById('level').value;
-        const log_time = document.getElementById('log_time').value;
+        const log_start_time = document.getElementById('log_start_time').value;
+        const log_end_time = document.getElementById('log_end_time').value;
 
         const queryParams = new URLSearchParams();
 
@@ -20,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (host_ip) queryParams.append('host_ip', host_ip);
         if (system_type) queryParams.append('system_type', system_type);
         if (level) queryParams.append('level', level);
-        if (log_time) queryParams.append('log_time', log_time);
+        if (log_start_time) queryParams.append('log_start_time', log_start_time);
+        if (log_end_time) queryParams.append('log_end_time', log_end_time);
 
         fetch(`/search?${queryParams.toString()}`)
             .then(response => response.json())

@@ -17,56 +17,6 @@ db_config = {
     'database': config.get('DEFAULT', 'database')
 }
 
-@app.route('/', methods=['GET'])
-def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
-
-@app.route('/<path:path>')
-def serve_static_file(path):
-    return send_from_directory(app.static_folder, path)
-
-@app.route('/search', methods=['GET'])
-def search_logs():
-    host_name = request.args.get('host_name')
-    host_ip = request.args.get('host_ip')
-    system_type = request.args.get('system_type')
-    level = request.args.get('level')
-    log_time = request.args.get('log_time')
-
-    query = 'SELECT * FROM log_data WHERE 1=1'
-    query_params = []
-
-    if host_name:
-        query += ' AND HOST_NAME = %s'
-        query_params.append(host_name)
-    if host_ip:
-        query += ' AND HOST_IP = %s'
-        query_params.append(host_ip)
-    if system_type:
-        query += ' AND SYSTEM_TYPE = %s'
-        query_params.append(system_type)
-    if level:
-        query += ' AND LEVEL = %s'
-        query_params.append(level)
-    if log_time:
-        query += ' AND LOG_TIME = %s'
-        query_params.append(log_time)
-
-    try:
-        connection = create_connection()
-        if connection:
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute(query, query_params)
-            results = cursor.fetchall()
-            cursor.close()
-            connection.close()
-            return jsonify(results), 200
-        else:
-            return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-    except Error as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
-
 def check_legal_data(data):
     errors = []
     # 驗證 HOST_NAME
@@ -127,7 +77,6 @@ def check_miss(data):
 
     return miss_field
 
-
 #routing路徑為/log 用HTTP的post
 @app.route('/log', methods=['POST'])
 def log():
@@ -178,6 +127,59 @@ def log():
    #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤
     except Error as e:
         return jsonify({'status': 'error', 'message': str(e)}), 501
+
+@app.route('/', methods=['GET'])
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static_file(path):
+    return send_from_directory(app.static_folder, path)
+
+@app.route('/search', methods=['GET'])
+def search_logs():
+    host_name = request.args.get('host_name')
+    host_ip = request.args.get('host_ip')
+    system_type = request.args.get('system_type')
+    level = request.args.get('level')
+    log_start_time = request.args.get('log_start_time')
+    log_end_time = request.args.get('log_end_time')
+
+    query = 'SELECT * FROM log_data WHERE 1=1'
+    query_params = []
+
+    if host_name:
+        query += ' AND HOST_NAME = %s'
+        query_params.append(host_name)
+    if host_ip:
+        query += ' AND HOST_IP = %s'
+        query_params.append(host_ip)
+    if system_type:
+        query += ' AND SYSTEM_TYPE = %s'
+        query_params.append(system_type)
+    if level:
+        query += ' AND LEVEL = %s'
+        query_params.append(level)
+    if log_start_time:
+        query += ' AND LOG_TIME >= %s'
+        query_params.append(log_start_time)
+    if log_end_time:
+        query += ' AND LOG_TIME <= %s'
+        query_params.append(log_end_time)
+
+    try:
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute(query, query_params)
+            results = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return jsonify(results), 200
+        else:
+            return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
+    except Error as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
     #生產環境要把debug拿掉，host 0000表示接受所有的ip
