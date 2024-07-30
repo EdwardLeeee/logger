@@ -38,7 +38,7 @@ select {
 }
 
 input[type="text"],
-input[type="date"] {
+input[type="datetime-local"] {
     width: calc(100% - 20px);
     padding: 10px;
     margin-bottom: 15px;
