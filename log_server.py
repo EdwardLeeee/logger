@@ -19,33 +19,20 @@ db_config = {
 
 def check_legal_data(data):
     errors = []
-    # 驗證 HOST_NAME
-    if len(data.get('HOST_NAME', '')) > 16:
-        errors.append('HOST_NAME 超過 16 個字符')
+    validations = {
+        'HOST_NAME': 16,
+        'HOST_IP': 15,
+        'LEVEL': 5,
+        'SYSTEM_TYPE': 20,
+        'PROCESS_NAME': 64,
+        'CONTENT': 512,
+        'LOG_TIME': 19
+    }
 
-    # 驗證 HOST_IP
-    if len(data.get('HOST_IP', '')) > 15:
-        errors.append('HOST_IP 超過 15 個字符')
+    for field, max_len in validations.items():
+        if len(data.get(field, '')) > max_len:
+            errors.append(f'{field} 超過 {max_len} 個字符')
 
-    # 驗證 SYSTEM_TYPE
-    if len(data.get('SYSTEM_TYPE', '')) > 20:
-        errors.append('SYSTEM_TYPE 超過 20 個字符')
-
-    # 驗證 LEVEL
-    level = data.get('LEVEL', '').upper()
-    if level not in ['INFO', 'WARN', 'ERRO']:
-        errors.append('LEVEL 必須是 INFO、WARN 或 ERRO')
-
-    # 驗證 PROCESS_NAME
-    if len(data.get('PROCESS_NAME', '')) > 64:
-        errors.append('PROCESS_NAME 超過 64 個字符')
-    # 驗證 CONTENT
-    if len(data.get('CONTENT', '')) > 512:
-        errors.append('CONTENT 超過 512 個字符')
-
-    # 驗證 LOG_TIME
-    if len(data.get('LOG_TIME', '')) > 19:
-        errors.append('LOG_TIME 超過 19 個字符')
     if errors:
         print('Wrong data format')
 
@@ -86,12 +73,12 @@ def log():
     #檢查是否資料缺失
     missing_field = check_miss(data)
     if missing_field:
-        return jsonify({'status': 'error', 'message': f'Missing field {missing_field}'}), 400
+        return jsonify({'status': 'error', 'message': f'collector missing field {missing_field}'}), 400
 
     #檢查數據是否合法
     data_unlegal = check_legal_data(data)
     if data_unlegal:
-        return jsonify({'status': 'error', 'message': f'{data_unlegal}'}), 402
+        return jsonify({'status': 'error', 'message': f'Illegal data  {data_unlegal}'}), 402
 
     #無資料殘缺
     try:
@@ -122,11 +109,12 @@ def log():
             return jsonify({'status': 'success', 'message': 'Log entry added successfully'}), 201
 
         #連接失敗，告訴client
+        #原因: (1)sql 帳號密碼錯誤 (2)sql service 沒開
         else:
             return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-   #非資料庫連接錯誤：在if內執行時發生錯誤，例如資料格式錯誤
+   #非資料庫連接錯誤:logger 的 (1) sql 指令錯誤 (2) python code 寫錯了
     except Error as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 501
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 @app.route('/', methods=['GET'])
 def serve_index():
@@ -178,16 +166,17 @@ def search_logs():
             return jsonify(results), 200
         else:
             return jsonify({'status': 'error', 'message': 'Database connection failed'}), 500
-    except Error as e:
+
+    except Error as e:# logger 的 (1) sql 指令錯誤 (2) python code 寫錯了
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 if __name__ == '__main__':
     #生產環境要把debug拿掉，host 0000表示接受所有的ip
     #thread表示多線程
-    app.run(debug=True ,host='0.0.0.0', port=5000,threaded=True)
-
+    app.run(host='0.0.0.0', port=5000,threaded=True)
+    ##GET成功200
+    ##POST成功201
     ##data格式缺失 400
     ##data格式錯誤 402
-    ##成功201
     ##連接失敗500
-    ##非連接問題失敗501
+    ##非連接問題失敗(sql or python 寫錯了)500

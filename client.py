@@ -24,7 +24,7 @@ for i in range(100):
     # 定義 log_entry
     log_entry = {
         "HOST_NAME": "Test1 Python",
-        "HOST_IP": "172.17.34.31",
+        "HOST_IP": f"172.17.34.{i}",
         "SYSTEM_TYPE": "EBTS",
         "LEVEL": random.choice(["INFO", "WARN", "ERRO"]),  # 隨機選擇 LEVEL
         "PROCESS_NAME": "Ex",
