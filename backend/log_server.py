@@ -3,6 +3,7 @@ import mysql.connector
 import configparser
 from mysql.connector import Error
 from flask_cors import CORS
+import os
 app = Flask(__name__, static_folder='public')
 CORS(app)
 
@@ -14,13 +15,22 @@ db_config = {
     'user': config.get('DEFAULT', 'user'),
     'password': config.get('DEFAULT', 'password'),
     'host': config.get('DEFAULT', 'host'),
-    'database': config.get('DEFAULT', 'database')
+    'database': config.get('DEFAULT', 'database'),
+    #'port': config.get('DEFAULT', 'port')  # 新增這一行
 }
-
+'''
+# 讀取配置文件
+db_config = {
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_NAME')
+}
+'''
 def check_legal_data(data):
     errors = []
     validations = {
-        'HOST_NAME': 16,
+        'HOST_NAME': 32,
         'HOST_IP': 15,
         'LEVEL': 5,
         'SYSTEM_TYPE': 20,
