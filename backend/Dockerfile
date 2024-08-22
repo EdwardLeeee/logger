@@ -10,7 +10,8 @@ COPY . .
 # 安裝所需的 Python 包
 RUN pip install --no-cache-dir Flask==3.0.3 mysql-connector-python==9.0.0 flask-cors==4.0.1
 
-# ENV DB_USER=oraclelee DB_PASSWORD=0000 DB_HOST=localhost DB_NAME=logger
+# 設定環境變數
+ENV DB_USER=oraclelee DB_PASSWORD=0000 DB_HOST=localhost DB_NAME=logger
 
 # 暴露 Flask 預設的端口
 EXPOSE 5000
